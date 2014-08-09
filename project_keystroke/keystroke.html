@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<script>
+
+$.get("getmono.php",{username:'<?php echo $user; ?>'},function(data){prevmono=data;}).done(function(data){jsonrevmono=JSON.parse(prevmono);$.get("getpp.php",{username:'<?php echo $user; ?>'},function(data){prevpp=data;}).done(function(data){ jsonrevpp=JSON.parse(prevpp);$.get("getpr.php",{username:'<?php echo $user; ?>'},function(data){prevpr=data;}).done(function(data){ jsonrevpr=JSON.parse(prevpr);$.get("getrr.php",{username:'<?php echo $user; ?>'},function(data){prevrr=data;}).done(function(data){ jsonrevrr=JSON.parse(prevrr);
+      var res = euclid(mono,pr,pp,rr,jsonrevmono,jsonrevpr,jsonrevpp,jsonrevrr);
+  if(res==1)
+  {
+    /*document.getElementById("display").innerHTML="WELCOME";*/
+  }
+  else
+  {
+    /*document.getElementById("display").innerHTML="UNBREACHABLE";*/
+  }
+
+  //refresh
+  collectarray=[];
+  /*document.getElementById("target").value=" ";*/
+  /*document.getElementById("log").innerHTML=" ";  */
+  xTriggeredd=0;
+  xTriggeredu = 0;
+});});});
+  });
+  
+    
+//script running every session:
+
+//collecting keystrokes from keyboard and adding to collectarray
+
+
+
+function session(){
+							//populating monograph and digraph arrays
+							for (i =0;i<collectarray.length-2;i++)
+							{
+								if(collectarray[i].eventc=="keydown"){
+									//finding next keydown and adding to 2pp
+									for(j=i+1;j<collectarray.length;j++)
+									{
+										if(collectarray[i].eventc=="keydown")
+										{
+											temp=collectarray[j].timec-collectarray[i].timec;
+											temp4=collectarray[i].keycodec;
+											temp5=collectarray[j].keycodec;
+											temp1=temp4+""+temp5;
+											break;
+										}
+									}
+									//finding next keyup and adding to 2pr
+									flag=j;//storing keydown index of second letter of digraph
+									//finding keyup of first letter of digraph
+									for(j=i+1;collectarray[j].keycodec!=temp4;j++){}
+									temp6=collectarray[j].timec;
+									//finding keyup of second letter of digraph
+									for(j=flag+1;collectarray[j].keycodec!=temp5;j++){}
+									temp7=collectarray[j].timec;
+									temp2=contains(pp,temp1);
+									//adding time to 2pp
+									if(temp2==-1){
+										pp.push(new dimono(temp1,temp));
+									}else{
+										temp3=pp[temp2].timec*pp[temp2].ocurrences +temp;
+										pp[temp2].timec=temp3/(pp[temp2].ocurrences+1);
+										pp[temp2].ocurrences++;
+									}
+									//adding time to 2pr
+									temp=temp7-collectarray[i].timec;
+									temp2=contains(pr,temp1);
+									if(temp2==-1){
+										pr.push(new dimono(temp1,temp));
+									}else{
+										temp3=pr[temp2].timec*pr[temp2].ocurrences +temp;
+										pr[temp2].timec=temp3/(pr[temp2].ocurrences+1);
+										pr[temp2].ocurrences++;
+									}
+									//adding time to 2rr
+									temp=Math.abs(temp7-temp6);
+									temp2=contains(rr,temp1);
+									if(temp2==-1){
+										rr.push(new dimono(temp1,temp));
+									}else{
+										temp3=rr[temp2].timec*rr[temp2].ocurrences +temp;
+										rr[temp2].timec=temp3/(rr[temp2].ocurrences+1);
+										rr[temp2].ocurrences++;
+									}
+									//adding time to 1pr
+									temp=temp6-collectarray[i].timec;
+									temp2=contains(mono,temp1);
+									if(temp2==-1){
+										mono.push(new dimono(temp1,temp));
+									}else{
+										temp3=mono[temp2].timec*mono[temp2].ocurrences +temp;
+										mono[temp2].timec=temp3/(mono[temp2].ocurrences+1);
+										mono[temp2].ocurrences++;
+									}
+								}
+							}
+							//getting the last monograph
+							flag=collectarray.length-3
+							if(collectarray[flag].event=="keydown")
+							{
+								temp=collectarray[flag+1].timec - collectarray[flag].timec;
+								temp1=collectarray[flag].keycodec;
+								temp2=contains(mono,temp1);
+								if(temp2==-1){
+									mono.push(new dimono(temp1,temp));
+								}else{
+									temp3=mono[temp2].timec*mono[temp2].ocurrences +temp;
+									mono[temp2].timec=temp3/(mono[temp2].ocurrences+1);
+									mono[temp2].ocurrences++;
+								}
+							}
+							//adding 1pr, 2pp, 2pr, 2rr values to arrays storing aggregate value of all sessions
+							for(i=0; i<mono.length;i++)
+							{
+								finalmono[i].keycodec=mono[i].keycodec;
+								finalmono[i].timec+=mono[i].timec;
+								finalpp[i].keycodec=pp[i].keycodec;
+								finalpp[i].timec+=pp[i].timec;
+								finalpr[i].keycodec=pr[i].keycodec;
+								finalpr[i].timec+=pr[i].timec;
+								finalrr[i].keycodec=rr[i].keycodec;
+								finalrr[i].timec+=rr[i].timec;
+							}
+							finalmono[i].keycodec=mono[i].keycodec;
+              finalmono[i].timec+=mono[i].timec;
+                 }
+// end of session
+
+
+
+</script>
+
+</body>
+</html>
